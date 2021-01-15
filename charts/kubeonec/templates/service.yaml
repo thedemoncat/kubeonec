@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubeonec.fullname" . }}
+  labels:
+    {{- include "kubeonec.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+      {{- range untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
+        - containerPort: {{ . }}
+          protocol: TCP
+      {{- end }}
+  selector:
+    {{- include "kubeonec.selectorLabels" . | nindent 4 }}

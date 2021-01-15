@@ -1,0 +1,30 @@
+# Default values for kubeonec.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+onec_server:
+  image:
+    repository: demoncat/onec-server
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: 8-3-14-2095
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service: 
+  type: ClusterIP
+
+ingress:
+  enable: false
+
+# Порты подключения клиентских соединений
+workProccesStartPort: 1560
+workProccesEndPort: 1591
+
+# Порт подключения менеджера кластера
+clusterManagerPort: 1541
+

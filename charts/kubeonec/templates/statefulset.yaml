@@ -1,0 +1,35 @@
+apiVersion: apps/v1 #  
+kind: StatefulSet
+metadata:
+  name: onec-server
+  namespace: onec-test
+  labels:
+    version: " {{- .Values.onec_server.image.tag }}"
+spec:
+  serviceName: onec-server
+  selector:
+    matchLabels:
+      app: onec-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: onec-server
+    spec:
+      containers:
+      - name: onec-server
+        {{- if .Values.onec_server.image.tag }}
+        image: "{{ .Values.onec_server.image.repository }}:{{ .Values.onec_server.image.tag }}"
+        {{- else }}
+        image: "{{ .Values.onec_server.image.repository }}:latest"
+        {{- end }}
+        ports:
+          - containerPort: "{{ .Values.clusterManagerPort }}"
+            name: ras
+          {{- range untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
+          - containerPort: {{ . }}
+            protocol: TCP
+          {{- end }}
+      imagePullSecrets:
+        - name: regcred
+
