@@ -7,9 +7,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-      {{- range untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
-        - containerPort: {{ . }}
-          protocol: TCP
+      {{- range   untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
+        - protocol: TCP
+          name: wp-{{ . }}
+          port: {{ (int .) }}
       {{- end }}
   selector:
     {{- include "kubeonec.selectorLabels" . | nindent 4 }}
