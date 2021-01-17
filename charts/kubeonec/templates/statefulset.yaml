@@ -1,7 +1,8 @@
 apiVersion: apps/v1 #  
 kind: StatefulSet
 metadata:
-  name: onec-server
+  name: {{ include "kubeonec.fullname" . }}-onec-server
+  namespace: {{ .Values.Namespace }}
   labels:
     version: " {{- .Values.onec_server.image.tag }}"
 spec:
@@ -12,6 +13,7 @@ spec:
   replicas: 1
   template:
     metadata:
+      namespace: {{ .Values.Namespace }}
       labels:
         app: onec-server
     spec:
@@ -29,6 +31,7 @@ spec:
           - containerPort: {{ . }}
             protocol: TCP
           {{- end }}
-      imagePullSecrets:
-        - name: regcred
+      {{- if .Values.serviceAccount.create}}
+      serviceAccount: {{ include "kubeonec.fullname" . }}-service
+      {{- end}}
 

@@ -4,14 +4,23 @@
 
 replicaCount: 1
 
+Namespace: onec
+
 onec_server:
   image:
-    repository: demoncat/onec-server
+    repository: demoncat/onec
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 8-3-14-2095
+    tag: server-8-3-14-2095
+  netHasp: 
+    create: true
+    serverAddres: localhost
+
+serviceAccount: 
+  create: true
 
 imagePullSecrets: []
+
 nameOverride: ""
 fullnameOverride: ""
 

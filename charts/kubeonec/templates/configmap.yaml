@@ -1,15 +1,15 @@
-{{- if (include "kubeonec.createNethasp" .) }}
+# {{- if .Values.onec_server.netHasp.create }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nethasp
-  namespace: onec-tes
+  name: {{ include "kubeonec.fullname" . }}-nethasp
+  namespace: {{ .Values.Namespace }}
 data:
   nethasp.ini: |
     [NH_COMMON]
     NH_TCPIP = Enabled
     [NH_TCPIP]
-    NH_SERVER_ADDR = ["{{ .Values.service.type }}"]
+    NH_SERVER_ADDR = ["{{ .Values.onec_server.netHasp.serverAddres }}"]
     NH_PORT_NUMBER = 475
     NH_TCPIP_METHOD = UDP
-{{- end }}
+# {{- end }}
