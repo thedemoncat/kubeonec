@@ -34,5 +34,7 @@ kubectl create ns onec
 3. устанавливаем инстанс из чарта
 
 ```
-    helm install onec -n onec -f D:\repo\DemonCat\kubeonec\charts\kubeonec\values.yaml  D:\repo\DemonCat\kubeonec\charts\kubeonec
+    helm upgrade -i  onec-server -n onec -f D:\repo\DemonCat\kubeonec\charts\kubeonec\values.yaml  D:\repo\DemonCat\kubeonec\charts\kubeonec
 ```
+
+
