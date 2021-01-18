@@ -36,6 +36,10 @@ spec:
       - name: ras
         image: "{{ .Values.ones_ras.image.repository}}:{{ .Values.ones_ras.image.tag}}"
         command: [ "/opt/1C/v8.3/x86_64/ras", "cluster" ]
+        ports: 
+          - name: ras
+            containerPort: {{ .Values.ones_ras.port }}
+            protocol: TCP
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
