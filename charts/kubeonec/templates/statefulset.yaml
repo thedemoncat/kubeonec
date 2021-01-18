@@ -25,10 +25,12 @@ spec:
         image: "{{ .Values.onec_server.image.repository }}:latest"
         {{- end }}
         ports:
-          - containerPort: {{ .Values.clusterManagerPort }}
-            name: ras
+          - name: clmen
+            containerPort: {{ .Values.clusterManagerPort }}
+            protocol: TCP
           {{- range untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
-          - containerPort: {{ . }}
+          - name: "wp-{{ . }}"
+            containerPort: {{ . }}
             protocol: TCP
           {{- end }}
       {{- if .Values.serviceAccount.create}}
