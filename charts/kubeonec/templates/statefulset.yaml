@@ -32,6 +32,6 @@ spec:
             protocol: TCP
           {{- end }}
       {{- if .Values.serviceAccount.create}}
-      serviceAccount: {{ include "kubeonec.fullname" . }}-service
+      serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
 

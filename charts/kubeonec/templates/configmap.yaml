@@ -1,4 +1,4 @@
-# {{- if .Values.onec_server.netHasp.create }}
+{{- if .Values.onec_server.netHasp.create }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,4 +12,4 @@ data:
     NH_SERVER_ADDR = ["{{ .Values.onec_server.netHasp.serverAddres }}"]
     NH_PORT_NUMBER = 475
     NH_TCPIP_METHOD = UDP
-# {{- end }}
+{{- end }}
