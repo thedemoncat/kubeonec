@@ -14,7 +14,7 @@ onec_server:
     tag: server-8-3-14-2095
   netHasp: 
     create: true
-    serverAddres: localhost
+    serverAddres: 192.168.1.10
 
 ones_ras:
   image:
@@ -25,7 +25,9 @@ ones_ras:
 serviceAccount: 
   create: true
 
-imagePullSecrets: []
+imagePullSecrets: [
+  "regsecret"
+]
 
 nameOverride: ""
 fullnameOverride: ""
