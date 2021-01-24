@@ -1,0 +1,26 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kaniko-workspace
+spec:
+  storageClassName: "csi-ssd-retain"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+ 
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kaniko-credentials
+spec:
+  storageClassName: "csi-ceph-retain"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100M
+---

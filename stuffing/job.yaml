@@ -30,6 +30,7 @@ spec:
         args:
          -  --dockerfile=/workspace/onec-instance/onec-server/Dockerfile 
          -  --context=/workspace/onec-instance/onec-server/ 
+         -  --cache=true
          -  --destination=demoncat/onec:k8s-$(VERSION)
          -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
          -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD) 
@@ -56,6 +57,7 @@ spec:
         volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker/
+          readOnly: true
         - name: workspace
           mountPath: /workspace
       restartPolicy: Never
@@ -73,8 +75,11 @@ spec:
           name: workspace
       volumes:
       - name: docker-config
-        configMap:
-          name: docker-config
+        secret:
+          secretName: regcred
+          items:
+          - key: .dockerconfigjson
+            path: config.json
       - name: workspace
         emptyDir: {}
       serviceAccount: kubeonec-sa
