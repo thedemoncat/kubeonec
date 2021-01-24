@@ -53,9 +53,11 @@ kubectl create ns onec
 2. Создаем конфигурационный файл `.env` с параметрами авторизации на площадке 1С
 
 ```
-ONEC_USERNAME=<ПОЛЬЗОВАТЕЛЬ_USERS.1C.V8.RU>
-ONEC_PASSWORD=<ПАРОЛЬ_ОТ_USERS.1C.V8.RU>
-ONEC_VERSION=8.3.14.1993
+    ONEC_USERNAME=<ПОЛЬЗОВАТЕЛЬ_USERS.1C.V8.RU>
+
+    ONEC_PASSWORD=<ПАРОЛЬ_ОТ_USERS.1C.V8.RU>
+    
+    ONEC_VERSION=8.3.14.1993
 
 ```
 3. Создаем секрет с параметрами авторизации на площадке 1С
