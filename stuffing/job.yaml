@@ -20,13 +20,6 @@ spec:
       containers:
       - name: build-image
         image: "gcr.io/kaniko-project/executor:latest"
-        # args:
-        #   - "--context=/workspace/onec-instance/onec-server/"
-        #   - "--dockerfile=/workspace/onec-instance/onec-server/Dockerfile"
-        #   - "--destination=demoncat/onec:k8s-VERSION"
-        #   - "--build-arg=ONEC_USERNAME"
-        #   - "--build-arg=ONEC_PASSWORD"  
-        #   - "--build-arg=VERSION"
         args:
          -  --dockerfile=/workspace/onec-instance/onec-server/Dockerfile 
          -  --context=/workspace/onec-instance/onec-server/ 
@@ -35,9 +28,6 @@ spec:
          -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
          -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD) 
          -  --build-arg=VERSION=$(VERSION)
-        # envFrom:
-        #   - secretRef:
-        #       name: user-onec
         env:
           - name: "VERSION"
             valueFrom:
