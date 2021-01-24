@@ -1,0 +1,80 @@
+
+
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubeonec-sa
+imagePullSecrets:
+  - name: regcred
+
+--- 
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: build-image
+spec:
+  template:
+    spec:
+      containers:
+      - name: build-image
+        image: "gcr.io/kaniko-project/executor:latest"
+        # args:
+        #   - "--context=/workspace/onec-instance/onec-server/"
+        #   - "--dockerfile=/workspace/onec-instance/onec-server/Dockerfile"
+        #   - "--destination=demoncat/onec:k8s-VERSION"
+        #   - "--build-arg=ONEC_USERNAME"
+        #   - "--build-arg=ONEC_PASSWORD"  
+        #   - "--build-arg=VERSION"
+        args:
+         -  --dockerfile=/workspace/onec-instance/onec-server/Dockerfile 
+         -  --context=/workspace/onec-instance/onec-server/ 
+         -  --destination=demoncat/onec:k8s-$(VERSION)
+         -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
+         -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD) 
+         -  --build-arg=VERSION=$(VERSION)
+        # envFrom:
+        #   - secretRef:
+        #       name: user-onec
+        env:
+          - name: "VERSION"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_VERSION
+          - name: "ONEC_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_USERNAME
+          - name: "ONEC_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_PASSWORD 
+        volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker/
+        - name: workspace
+          mountPath: /workspace
+      restartPolicy: Never
+      initContainers:
+      - name: git-cloner
+        image: alpine/git
+        args:
+            - clone
+            - --recurse-submodules
+            - --
+            - https://github.com/TheDemonCat/onec-instance.git
+            - /git/onec-instance
+        volumeMounts:
+        - mountPath: /git
+          name: workspace
+      volumes:
+      - name: docker-config
+        configMap:
+          name: docker-config
+      - name: workspace
+        emptyDir: {}
+      serviceAccount: kubeonec-sa
