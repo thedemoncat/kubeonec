@@ -1,28 +1,17 @@
-
-
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: kubeonec-sa
-imagePullSecrets:
-  - name: regcred
-
---- 
-
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: build-image
+  name: onec-server
 spec:
+  parallelism: 1
   template:
     spec:
       containers:
-      - name: build-image
+      - name: onec-server
         image: "gcr.io/kaniko-project/executor:latest"
         args:
-         -  --dockerfile=/workspace/onec-instance/onec-server/Dockerfile 
-         -  --context=/workspace/onec-instance/onec-server/ 
+         -  --dockerfile=/workspace/kubeonec.git/docker/images/onec-server/Dockerfile 
+         -  --context=/workspace/kubeonec.git/docker/images/onec-server/
          -  --cache=true
          -  --destination=demoncat/onec:k8s-$(VERSION)
          -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
@@ -50,18 +39,27 @@ spec:
           readOnly: true
         - name: workspace
           mountPath: /workspace
+      # - name: alpine
+      #   image: alpine:latest
+      #   command: ['sleep', 'infinity']
+      #   volumeMounts:
+      #   - name: workspace
+      #     mountPath: /workspace
       restartPolicy: Never
       initContainers:
       - name: git-cloner
-        image: alpine/git
+        image: k8s.gcr.io/git-sync:v3.1.5
         args:
-            - clone
-            - --recurse-submodules
-            - --
-            - https://github.com/TheDemonCat/onec-instance.git
-            - /git/onec-instance
+          - ""
+        env:
+        - name: GIT_SYNC_REPO
+          value: https://github.com/TheDemonCat/kubeonec.git
+        - name: GIT_SYNC_BRANCH
+          value: build_images
+        - name: GIT_SYNC_ONE_TIME
+          value: "true"
         volumeMounts:
-        - mountPath: /git
+        - mountPath: /tmp/git
           name: workspace
       volumes:
       - name: docker-config

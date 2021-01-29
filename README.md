@@ -11,10 +11,16 @@
 ## Запуск кластера
 
 
-1. При использовании приватного docker registry необходимо создать секрет, с указанием параметров авторизации.
+1. Создаем новый namespace
 
 ```
-kubectl create secret docker-registry regcred --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+kubectl create ns onec
+```
+
+2. При использовании приватного docker registry необходимо создать секрет, с указанием параметров авторизации.
+
+```
+kubectl create secret docker-registry regcred -n onec--docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 
 ```
 , где 
@@ -32,17 +38,11 @@ imagePullSecrets: [
 ]
 ```
 
-2. Создаем новый namespace
-
-```
-kubectl create ns onec
-```
 3. устанавливаем инстанс из чарта
 
 ```
-    helm upgrade -i  onec-server -n onec -f D:\repo\DemonCat\kubeonec\charts\kubeonec\values.yaml  D:\repo\DemonCat\kubeonec\charts\kubeonec
+    helm upgrade -i onec-server -n onec -f %CD%\charts\kubeonec\values.yaml  %CD%\charts\kubeonec
 ```
-
 
 ## Сборка образов 1С
 
@@ -63,11 +63,11 @@ kubectl create ns onec
 3. Создаем секрет с параметрами авторизации на площадке 1С
 
 ```
-kubectl create secret generic user-onec --from-env-file=.env
+kubectl create secret generic user-onec -n onec --from-env-file=.env
 ```
 
 4. Запускаем задачу сборки образа
 
 ```
-kubectl apply -f stuffing/job.yaml
+kubectl apply -n onec -f stuffing/job.yaml
 ```

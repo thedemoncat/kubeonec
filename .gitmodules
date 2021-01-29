@@ -1,6 +1,3 @@
-[submodule "images/onec-full"]
-	path = images/onec-full
-	url = https://github.com/TheDemonCat/onec-full.git
-[submodule "images/onec-server"]
-	path = images/onec-server
-	url = https://github.com/TheDemonCat/onec-server.git
+[submodule "docker\\images\\onec-server-k8s"]
+	path = docker\\images\\onec-server-k8s
+	url = https://github.com/TheDemonCat/onec-server-k8s.git

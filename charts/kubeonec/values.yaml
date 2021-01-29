@@ -11,7 +11,7 @@ onec_server:
     repository: demoncat/onec
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: server-8-3-14-2095
+    tag: server-8.3.16.1659-k8s
   netHasp: 
     create: true
     serverAddres: 192.168.1.10

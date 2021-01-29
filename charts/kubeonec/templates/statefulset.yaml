@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app: onec-server
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       namespace: {{ .Values.Namespace }}
@@ -43,4 +43,5 @@ spec:
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
+
 
