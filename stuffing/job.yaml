@@ -15,14 +15,15 @@ kind: Job
 metadata:
   name: build-image
 spec:
+  parallelism: 1
   template:
     spec:
       containers:
       - name: build-image
         image: "gcr.io/kaniko-project/executor:latest"
         args:
-         -  --dockerfile=/workspace/onec-instance/onec-server/Dockerfile 
-         -  --context=/workspace/onec-instance/onec-server/ 
+         -  --dockerfile=/workspace/onec-instance/docker/onec-server/Dockerfile 
+         -  --context=/workspace/onec-instance/docker/onec-server/
          -  --cache=true
          -  --destination=demoncat/onec:k8s-$(VERSION)
          -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
@@ -58,7 +59,7 @@ spec:
             - clone
             - --recurse-submodules
             - --
-            - https://github.com/TheDemonCat/onec-instance.git
+            - https://github.com/TheDemonCat/kubeonec.git
             - /git/onec-instance
         volumeMounts:
         - mountPath: /git
