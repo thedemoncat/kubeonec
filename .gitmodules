@@ -1,0 +1,3 @@
+[submodule "docker\\images\\onec-server-k8s"]
+	path = docker\\images\\onec-server-k8s
+	url = https://github.com/TheDemonCat/onec-server-k8s.git

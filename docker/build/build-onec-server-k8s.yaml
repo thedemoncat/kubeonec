@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: build-image-server-k8s
+spec:
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - name: build-image-server-k8s
+        image: "gcr.io/kaniko-project/executor:latest"
+        args:
+         -  --dockerfile=/workspace/kubeonec.git/docker/onec-server-k8s/onec-server/Dockerfile 
+         -  --context=/workspace/kubeonec.git/docker/onec-server-k8s/onec-server/
+         -  --cache=true
+         -  --destination=demoncat/onec:k8s-$(VERSION)
+         -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
+         -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD)
+         -  --build-arg=VERSION_ONEC_UTIL=0.1.2
+         -  --build-arg=VERSION=$(VERSION)
+        env:
+          - name: "VERSION"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_VERSION
+          - name: "ONEC_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_USERNAME
+          - name: "ONEC_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_PASSWORD 
+        volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker/
+          readOnly: true
+        - name: workspace
+          mountPath: /workspace
+      restartPolicy: Never
+      initContainers:
+      - name: git-cloner
+        image: k8s.gcr.io/git-sync:v3.1.5
+        args:
+          - ""
+        env:
+        - name: GIT_SYNC_REPO
+          value: https://github.com/TheDemonCat/kubeonec.git
+        - name: GIT_SYNC_BRANCH
+          value: build_images
+        - name: GIT_SYNC_ONE_TIME
+          value: "true"
+        volumeMounts:
+        - mountPath: /tmp/git
+          name: workspace
+      volumes:
+      - name: docker-config
+        secret:
+          secretName: regcred
+          items:
+          - key: .dockerconfigjson
+            path: config.json
+      - name: workspace
+        emptyDir: {}
+      serviceAccount: kubeonec-sa
