@@ -19,11 +19,11 @@ spec:
   template:
     spec:
       containers:
-      - name: build-image
+      - name: build-image-server
         image: "gcr.io/kaniko-project/executor:latest"
         args:
-         -  --dockerfile=/workspace/onec-instance/docker/onec-server/Dockerfile 
-         -  --context=/workspace/onec-instance/docker/onec-server/
+         -  --dockerfile=/workspace/kubeonec.git/docker/onec-server/Dockerfile 
+         -  --context=/workspace/kubeonec.git/docker/onec-server/
          -  --cache=true
          -  --destination=demoncat/onec:k8s-$(VERSION)
          -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
@@ -51,19 +51,68 @@ spec:
           readOnly: true
         - name: workspace
           mountPath: /workspace
+      - name: build-image-server-k8s
+        image: "gcr.io/kaniko-project/executor:latest"
+        args:
+         -  --dockerfile=/workspace/kubeonec.git/docker/onec-server/Dockerfile 
+         -  --context=/workspace/kubeonec.git/docker/onec-server/
+         -  --cache=true
+         -  --destination=demoncat/onec:k8s-$(VERSION)
+         -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
+         -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD) 
+         -  --build-arg=VERSION=$(VERSION)
+        env:
+          - name: "VERSION"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_VERSION
+          - name: "ONEC_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_USERNAME
+          - name: "ONEC_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_PASSWORD 
+        volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker/
+          readOnly: true
+        - name: workspace
+          mountPath: /workspace
+      # - name: alpine
+      #   image: alpine:latest
+      #   command: ['sleep', 'infinity']
+      #   volumeMounts:
+      #   - name: workspace
+      #     mountPath: /workspace
       restartPolicy: Never
       initContainers:
       - name: git-cloner
-        image: alpine/git
+        image: k8s.gcr.io/git-sync:v3.1.5
         args:
-            - clone
-            - --recurse-submodules
-            - --
-            - https://github.com/TheDemonCat/kubeonec.git
-            - /git/onec-instance
+          - ""
+        env:
+        - name: GIT_SYNC_REPO
+          value: https://github.com/TheDemonCat/kubeonec.git
+        - name: GIT_SYNC_BRANCH
+          value: build_images
+        # - name: GIT_SYNC_ROOT
+        #   value: /tmp
+        # - name: GIT_SYNC_DEST
+        #   value: "kubeonec"
+        - name: GIT_SYNC_ONE_TIME
+          value: "true"
+        # - name: GIT_SYNC_PERMISSIONS
+        #   value: "0777"
         volumeMounts:
-        - mountPath: /git
+        - mountPath: /tmp/git
           name: workspace
+        # securityContext:
+        #   runAsUser: 0
       volumes:
       - name: docker-config
         secret:
