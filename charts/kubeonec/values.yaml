@@ -44,4 +44,5 @@ workProccesEndPort: 1591
 
 # Порт подключения менеджера кластера
 clusterManagerPort: 1541
+serveragent: 1540
 

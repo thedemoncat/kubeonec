@@ -13,5 +13,13 @@ spec:
           name: wp-{{ . }}
           port: {{ (int .) }}
       {{- end }}
+        - protocol: TCP
+          name: clmen
+          port: {{ .Values.serveragent }}
+        - protocol: TCP
+          name: cluster
+          port: {{ .Values.clusterManagerPort }}
+        - name: ras
+          port: {{ .Values.ones_ras.port }}
   selector:
-    {{- include "kubeonec.selectorLabels" . | nindent 4 }}
+    app: onec-server
