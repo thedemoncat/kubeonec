@@ -26,17 +26,16 @@ spec:
         {{- end }}
         ports:
           - name: clmen
-            containerPort: {{ .Values.clusterManagerPort }}
+            containerPort: {{ .Values.clusterManagerPort }}  
             protocol: TCP
           {{- range untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
           - name: "wp-{{ . }}"
             containerPort: {{ . }}
             protocol: TCP
           {{- end }}
-      - name: ras
-        image: "{{ .Values.ones_ras.image.repository}}:{{ .Values.ones_ras.image.tag}}"
-        command: [ "/opt/1C/v8.3/x86_64/ras", "cluster" ]
-        ports: 
+          - name: cluster
+            containerPort: {{ .Values.serveragent }}
+            protocol: TCP
           - name: ras
             containerPort: {{ .Values.ones_ras.port }}
             protocol: TCP

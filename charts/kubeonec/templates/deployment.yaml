@@ -1,0 +1,28 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-onec-ras
+  namespace: {{ .Values.Namespace }}
+  labels:
+    version: "{{- .Values.onec_server.image.tag}}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onec-ras
+  template:
+    metadata:
+      labels:
+        app: onec-ras
+    spec:
+      containers:
+        - name: onec-ras
+          image: "{{ .Values.ones_ras.image.repository}}:{{ .Values.ones_ras.image.tag}}"
+          command: [ "/opt/1C/v8.3/x86_64/ras", "cluster", "onec-server-kubeonec-service" ]
+          ports: 
+            - name: ras
+              containerPort: {{ .Values.ones_ras.port }}
+              protocol: TCP
+      {{- if .Values.serviceAccount.create}}
+      serviceAccount: {{ include "kubeonec.fullname" . }}-sa
+      {{- end}}
