@@ -22,4 +22,4 @@ spec:
         - name: ras
           port: {{ .Values.ones_ras.port }}
   selector:
-    {{- include "kubeonec.selectorLabels" . | nindent 4 }}
+    app: onec-server
