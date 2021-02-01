@@ -43,4 +43,59 @@ spec:
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
 
+---
+
+apiVersion: apps/v1 #  
+kind: StatefulSet
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-onec-client
+  namespace: {{ .Values.Namespace }}
+  labels:
+    version: " {{- .Values.ones_client.image.tag }}"
+spec:
+  serviceName: onec-client
+  selector:
+    matchLabels:
+      app: onec-client
+  replicas: {{ .Values.ones_client.replicaCount }}
+  template:
+    metadata:
+      namespace: {{ .Values.Namespace }}
+      labels:
+        app: onec-client
+    spec:
+      containers:
+      - name: onec-client
+        image: "{{ .Values.ones_client.image.repository }}:{{ .Values.ones_client.image.tag }}"
+        command: ['sleep', 'infinity']
+      {{- if .Values.serviceAccount.create}}
+      serviceAccount: {{ include "kubeonec.fullname" . }}-sa
+      {{- end}}
+
+---
+
+apiVersion: apps/v1 #  
+kind: StatefulSet
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-postgres
+  namespace: {{ .Values.Namespace }}
+spec:
+  serviceName: postgresql
+  selector:
+    matchLabels:
+      app: postgresql
+  replicas: {{ .Values.postgres.replicaCount }}
+  template:
+    metadata:
+      namespace: {{ .Values.Namespace }}
+      labels:
+        app: postgresql
+    spec:
+      containers:
+      - name: postgresql
+        image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+      {{- if .Values.serviceAccount.create}}
+      serviceAccount: {{ include "kubeonec.fullname" . }}-sa
+      {{- end}}
+
 
