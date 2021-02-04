@@ -23,3 +23,21 @@ spec:
           port: {{ .Values.ones_ras.port }}
   selector:
     app: onec-server
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-postges-service
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "kubeonec.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+        - protocol: TCP
+          name: postgresql
+          port: {{ .Values.postgres.port }}
+  selector:
+    app: postgresql

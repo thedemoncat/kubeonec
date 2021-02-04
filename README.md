@@ -44,6 +44,11 @@ imagePullSecrets: [
     helm upgrade -i onec-server -n onec -f %CD%\charts\kubeonec\values.yaml  %CD%\charts\kubeonec
 ```
 
+
+```
+    helm upgrade -i onec-server -n onec -f charts/kubeonec/values.yaml  charts/kubeonec
+```
+
 ## Сборка образов 1С
 
 1. Для отправки образа в удаленное docker registry необходимо создать файл `config.json` и смонтировать его в нужное место.

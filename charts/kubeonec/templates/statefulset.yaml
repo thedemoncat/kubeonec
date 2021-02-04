@@ -68,6 +68,14 @@ spec:
       - name: onec-client
         image: "{{ .Values.ones_client.image.repository }}:{{ .Values.ones_client.image.tag }}"
         command: ['sleep', 'infinity']
+        volumeMounts:
+        - name: {{ include "kubeonec.fullname" . }}-nethasp
+          mountPath: /opt/1C/v8.3/x86_64/conf/nethasp.ini
+          subPath: nethasp.ini
+      volumes:
+        - name: {{ include "kubeonec.fullname" . }}-nethasp
+          configMap:
+            name: {{ include "kubeonec.fullname" . }}-nethasp
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
@@ -94,6 +102,10 @@ spec:
       containers:
       - name: postgresql
         image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+        ports: 
+         - name: postgresql
+           containerPort: {{ .Values.postgres.port }}
+           protocol: TCP
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}

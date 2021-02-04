@@ -7,50 +7,50 @@ spec:
   template:
     spec:
       containers:
-      # - name: onec-oscript
-      #   image: "gcr.io/kaniko-project/executor:latest"
-      #   args:
-      #    -  --dockerfile=/workspace/onec-oscript.git/Dockerfile 
-      #    -  --context=/workspace/onec-oscript.git/
-      #    -  --cache=true
-      #    -  --destination=$(ONEC_VERSION)
-      #    -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
-      #    -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD) 
-      #    -  --build-arg=VERSION=$(ONEC_VERSION)
-      #    -  --build-arg=OSCRIPT_VERSION=$(OSCRIPT_VERSION)
-      #   env:
-      #     - name: "ONEC_VERSION"
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: user-onec
-      #           key: ONEC_VERSION
-      #     - name: "ONEC_USERNAME"
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: user-onec
-      #           key: ONEC_USERNAME
-      #     - name: "ONEC_PASSWORD"
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: user-onec
-      #           key: ONEC_PASSWORD 
-      #     - name: "OSCRIPT_VERSION"
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: user-onec
-      #           key: OSCRIPT_VERSION 
-      #   volumeMounts:
-      #   - name: docker-config
-      #     mountPath: /kaniko/.docker/
-      #     readOnly: true
-      #   - name: workspace
-      #     mountPath: /workspace
-      - name: alpine
-        image: alpine:latest
-        command: ['sleep', 'infinity']
+      - name: onec-oscript
+        image: "gcr.io/kaniko-project/executor:latest"
+        args:
+         -  --dockerfile=/workspace/onec-oscript.git/Dockerfile 
+         -  --context=/workspace/onec-oscript.git/
+         -  --cache=true
+         -  --destination=$(ONEC_VERSION)
+         -  --build-arg=ONEC_USERNAME=$(ONEC_USERNAME) 
+         -  --build-arg=ONEC_PASSWORD=$(ONEC_PASSWORD) 
+         -  --build-arg=VERSION=$(ONEC_VERSION)
+         -  --build-arg=OSCRIPT_VERSION=$(OSCRIPT_VERSION)
+        env:
+          - name: "ONEC_VERSION"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_VERSION
+          - name: "ONEC_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_USERNAME
+          - name: "ONEC_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: ONEC_PASSWORD 
+          - name: "OSCRIPT_VERSION"
+            valueFrom:
+              secretKeyRef:
+                name: user-onec
+                key: OSCRIPT_VERSION 
         volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker/
+          readOnly: true
         - name: workspace
           mountPath: /workspace
+      # - name: alpine
+      #   image: alpine:latest
+      #   command: ['sleep', 'infinity']
+      #   volumeMounts:
+      #   - name: workspace
+      #     mountPath: /workspace
       restartPolicy: Never
       initContainers:
       - name: git-cloner
