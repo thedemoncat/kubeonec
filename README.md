@@ -20,7 +20,7 @@ kubectl create ns onec
 2. При использовании приватного docker registry необходимо создать секрет, с указанием параметров авторизации.
 
 ```
-kubectl create secret docker-registry regcred -n onec--docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+kubectl create secret docker-registry regcred -n onec --docker-server=https://index.docker.io/v1/ --docker-username=demoncat --docker-password=1e9f9a94-9d68-4ac9-9927-debc8dbb689f --docker-email=nl.ruslan@yandex.ru
 
 ```
 , где 
@@ -76,3 +76,9 @@ kubectl create secret generic user-onec -n onec --from-env-file=.env
 ```
 kubectl apply -n onec -f stuffing/job.yaml
 ```
+
+
+/opt/1C/v8.3/x86_64/1cv8 "CREATEINFOBASE Srvr="onec-server-kubeonec-service";Ref="test3";DBMS="PostgreSQL";DBSrvr="onec-server-kubeonec-postges-service";DB="test3";DBUID="postgres";DBPwd="";CrSQLDB="Y";SchJobDn="N"; /AddInList test3 /Out create.log"
+
+
+/opt/1C/v8.3/x86_64/1cv8 CREATEINFOBASE File=./test3; /AddInListTEST33 

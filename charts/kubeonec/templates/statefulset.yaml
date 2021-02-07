@@ -25,7 +25,7 @@ spec:
         image: "{{ .Values.onec_server.image.repository }}:latest"
         {{- end }}
         ports:
-          - name: clmen
+          - name: clusterManagerPort
             containerPort: {{ .Values.clusterManagerPort }}  
             protocol: TCP
           {{- range untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
@@ -33,7 +33,7 @@ spec:
             containerPort: {{ . }}
             protocol: TCP
           {{- end }}
-          - name: cluster
+          - name: serveragent
             containerPort: {{ .Values.serveragent }}
             protocol: TCP
           - name: ras
