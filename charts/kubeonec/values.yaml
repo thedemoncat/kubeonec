@@ -6,21 +6,34 @@ replicaCount: 1
 
 Namespace: onec
 
+postgres:
+  image: 
+    repository: rsyuzyov/docker-postgresql-pro-1c
+    tag: latest
+  port: 5432
+  replicaCount: 1
+
 onec_server:
   image:
     repository: demoncat/onec
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: server-8.3.16.1659-k8s
-  netHasp: 
-    create: true
-    serverAddres: 192.168.1.10
 
 ones_ras:
   image:
     repository: demoncat/onec
-    tag: full-8-3-14-2095 
+    tag: full-8.3.16.1659 
   port: 1545
+
+ones_client:
+  image:
+    repository: demoncat/onec
+    tag: client-oscript-8.3.16.1659
+  replicaCount: 1
+  netHasp: 
+    create: true
+    serverAddres: 192.168.1.10
 
 serviceAccount: 
   create: true
@@ -44,5 +57,6 @@ workProccesEndPort: 1591
 
 # Порт подключения менеджера кластера
 clusterManagerPort: 1541
+# Прот агента сервера (не обязательно, если центральный сервер кластера один).
 serveragent: 1540
 
