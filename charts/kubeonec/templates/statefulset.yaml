@@ -73,5 +73,3 @@ spec:
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
-
-
