@@ -41,3 +41,24 @@ spec:
           port: {{ .Values.postgres.port }}
   selector:
     app: postgresql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-client
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "kubeonec.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+        - name: agent
+          protocol: TCP
+          port: 1543
+        - name: novnc
+          protocol: TCP
+          port: 6080
+  selector:
+    app: onec-client
