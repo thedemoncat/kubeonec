@@ -33,7 +33,20 @@ ones_client:
   replicaCount: 1
   netHasp: 
     create: true
-    serverAddres: 192.168.1.10
+    serverAddres: sunbro.ddns.net
+
+api_cluster_manager:
+  name: hirac
+  hirac:
+    image:
+      repository:
+      tag:  
+  odin:
+    image:
+      repository: 
+      tag: latest
+    license:
+      secret_name: odin_lic
 
 serviceAccount: 
   create: true
@@ -57,6 +70,6 @@ workProccesEndPort: 1591
 
 # Порт подключения менеджера кластера
 clusterManagerPort: 1541
-# Прот агента сервера (не обязательно, если центральный сервер кластера один).
+# Порт агента сервера (не обязательно, если центральный сервер кластера один).
 serveragent: 1540
 
