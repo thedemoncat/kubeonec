@@ -1,4 +1,4 @@
-{{- if .Values.ones_client.netHasp.create }}
+{{- if .Values.ones_client.netHasp.create}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,3 +13,55 @@ data:
     NH_PORT_NUMBER = 475
     NH_TCPIP_METHOD = UDP
 {{- end }}
+
+---
+
+{{- if eq .Values.api_cluster_manager.name "hirac" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-hirac-conf
+  namespace: {{ .Values.Namespace }}
+data:
+  racsettings.json: |
+    {
+        "ras" : {
+            "__default" : {
+                "rac"        : "{{ .Values.onec_version}}",
+                "admin_name" : "",
+                "admin_pwd"  : ""
+            },
+            "onec_server" : {
+                "reserves" : "",
+                "ras"      : "localhost:{{ .Values.ones_ras.port }}"
+            },
+        },
+        "onec_server" : {
+            "__default" : {
+                "admin_name" : "",
+                "admin_pwd"  : ""
+            }
+        },
+      "connectionPoolSize"       : 10,
+      "reconnectAtempts"         : 3,
+      "reconnectInterval"        : 1500,
+      "connectionWait"           : 10000,
+      "connectionLockInterval"   : 90000,
+      "logQueryDuration"         : false,
+      "QueryDurationLogFilename" : ""
+    }
+
+{{ else }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-odin-conf
+  namespace: {{ .Values.Namespace }}
+data:
+  odin.yaml: |
+    app:
+    - addr: localhost
+      descr: k8s server
+      name: onec
+{{- end -}}
