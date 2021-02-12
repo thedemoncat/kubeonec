@@ -46,8 +46,52 @@ imagePullSecrets: [
 
 
 ```
-    helm upgrade -i onec-server -n onec -f charts/kubeonec/values.yaml  charts/kubeonec
+    helm upgrade -i onec-server -n onec -f values.yaml  charts/kubeonec
 ```
+
+## Установка API сервера управления кластером 1C
+
+В текущем чарте поддерживаются 2 варианта сервера
+
+- [HiRAC](https://github.com/arkuznetsov/hirac) от Артема Кузнецова -  бесплатный
+- [Odin](Link) от Алексея Хорева - платный
+
+Выбор сервера управления осуществляется в настройках чарта по пути `api_cluster_manager.name`
+
+На текущий момент по умолчанию стоит `Odin`, но планируется изменение на `HiRAC`
+
+
+### ODIN
+
+для работы ODIN необходимо создать объект с типом secret, содержащий файл лицензии. Для этого необходимо расположить файл лицензии по пути
+`odin/license.lic` и создать секрет командой:
+
+```
+kubectl create secret generic odin-lic -n onec --from-file=odin/license.lic
+```
+
+По умолчанию Odin стартует на 3001 порту, для доступа с текущего хоста пробрасываем порт:
+
+```
+$ ku get pods -n onec
+NAME                                                     READY   STATUS    RESTARTS   AGE
+onec-server-kubeonec-onec-client-5967769898-c5k6g        1/1     Running   0          34m
+onec-server-kubeonec-onec-cluster-api-7c68966c54-69dvn   2/2     Running   0          16m
+onec-server-kubeonec-onec-server-0                       1/1     Running   0          26h
+onec-server-kubeonec-postgres-0                          1/1     Running   0          26h
+
+ku port-forward -n onec onec-server-kubeonec-onec-cluster-api-7c68966c54-69dvn 3001:3001
+Forwarding from 127.0.0.1:3001 -> 3001
+Forwarding from [::1]:3001 -> 3001
+```
+
+После проброса порта ресурсы доступны по адресам:
+
+Документация - http://localhost:3001/docs/index.html
+
+API - http://localhost:3001/api/v1/
+
+Примеры запросов [тут](odin/Readme.md)
 
 ## Сборка образов 1С
 
@@ -76,9 +120,3 @@ kubectl create secret generic user-onec -n onec --from-env-file=.env
 ```
 kubectl apply -n onec -f stuffing/job.yaml
 ```
-
-
-/opt/1C/v8.3/x86_64/1cv8 "CREATEINFOBASE Srvr="onec-server-kubeonec-service";Ref="test3";DBMS="PostgreSQL";DBSrvr="onec-server-kubeonec-postges-service";DB="test3";DBUID="postgres";DBPwd="";CrSQLDB="Y";SchJobDn="N"; /AddInList test3 /Out create.log"
-
-
-/opt/1C/v8.3/x86_64/1cv8 CREATEINFOBASE File=./test3; /AddInListTEST33 

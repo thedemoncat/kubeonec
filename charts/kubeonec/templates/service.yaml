@@ -29,6 +29,24 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ include "kubeonec.fullname" . }}-odin
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "kubeonec.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+        - protocol: TCP
+          name: odin-api-port
+          port: 3001
+  selector:
+    app: onec-cluster-api
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
   name: {{ include "kubeonec.fullname" . }}-postges-service
   namespace: {{ .Values.Namespace }}
   labels:

@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ include "kubeonec.fullname" . }}-onec-ras
+  name: {{ include "kubeonec.fullname" . }}-onec-cluster-api
   namespace: {{ .Values.Namespace }}
   labels:
     version: "{{- .Values.onec_server.image.tag}}"
@@ -9,20 +9,45 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: onec-ras
+      app: onec-cluster-api
   template:
     metadata:
       labels:
-        app: onec-ras
+        app: onec-cluster-api
     spec:
       containers:
-        - name: onec-ras
+        - name: onec-cluster-rac
           image: "{{ .Values.ones_ras.image.repository}}:{{ .Values.ones_ras.image.tag}}"
           command: [ "/opt/1C/v8.3/x86_64/ras", "cluster", "onec-server-kubeonec-service" ]
           ports: 
             - name: ras
               containerPort: {{ .Values.ones_ras.port }}
               protocol: TCP
+        - name: ra-api
+          image: "{{ .Values.api_cluster_manager.odin.image.repository}}:{{ .Values.api_cluster_manager.odin.image.tag}}"
+          args: 
+            - --config
+            - /app/odin.yaml
+            - --debug
+          ports:
+            - name: odin-api-port
+              containerPort: {{ .Values.api_cluster_manager.odin.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: {{ include "kubeonec.fullname" . }}-odin-lic
+              mountPath: /app/lic/license.lic
+              subPath: license.lic
+            - name: {{ include "kubeonec.fullname" . }}-odin-conf
+              mountPath: /app/odin.yaml
+              subPath: odin.yaml
+      volumes:   
+        - name: {{ include "kubeonec.fullname" . }}-odin-lic
+          secret:
+            secretName: odin-lic 
+        - name: {{ include "kubeonec.fullname" . }}-odin-conf
+          configMap:
+            name: {{ include "kubeonec.fullname" . }}-odin-conf           
+             
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
