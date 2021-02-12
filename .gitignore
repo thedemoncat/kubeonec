@@ -1,3 +1,5 @@
 .env
 build/*
 config.json
+odin
+values.yaml

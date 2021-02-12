@@ -6,6 +6,8 @@ replicaCount: 1
 
 Namespace: onec
 
+onec_version: 8.3.16.1659
+
 postgres:
   image: 
     repository: rsyuzyov/docker-postgresql-pro-1c
@@ -33,20 +35,22 @@ ones_client:
   replicaCount: 1
   netHasp: 
     create: true
-    serverAddres: sunbro.ddns.net
+    serverAddres: 192.168.1.1
 
 api_cluster_manager:
-  name: hirac
+  name: odin
   hirac:
-    image:
-      repository:
-      tag:  
+    image: 
+      repository: demoncat/hirac
+      tag: latest
+    port: 5001
   odin:
-    image:
-      repository: 
+    image: 
+      repository: v8platform/odin
       tag: latest
     license:
-      secret_name: odin_lic
+      secret_name: odin-lic
+    port: 3001
 
 serviceAccount: 
   create: true
