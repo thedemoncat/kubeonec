@@ -1,5 +1,5 @@
 .env
 build/*
 config.json
-odin
 values.yaml
+license.lic
