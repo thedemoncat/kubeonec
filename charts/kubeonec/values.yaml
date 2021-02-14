@@ -25,13 +25,13 @@ onec_server:
 ones_ras:
   image:
     repository: demoncat/onec
-    tag: full-8.3.16.1659 
+    tag: full-8.3.16.1659-k8s 
   port: 1545
 
 ones_client:
   image:
     repository: demoncat/onec
-    tag: client-oscript-8.3.16.1659
+    tag: client-8.3.16.1659-k8s
   replicaCount: 1
   netHasp: 
     create: true
