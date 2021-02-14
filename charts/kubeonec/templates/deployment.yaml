@@ -19,12 +19,17 @@ spec:
         - name: onec-cluster-rac
           image: "{{ .Values.ones_ras.image.repository}}:{{ .Values.ones_ras.image.tag}}"
           command: [ "/opt/1C/v8.3/x86_64/ras", "cluster", "onec-server-kubeonec-service" ]
+          imagePullPolicy: Always
           ports: 
             - name: ras
               containerPort: {{ .Values.ones_ras.port }}
               protocol: TCP
+          env:
+          - name: KUBE_NAMESPACE
+            value: {{ .Values.Namespace }}
         - name: ra-api
           image: "{{ .Values.api_cluster_manager.odin.image.repository}}:{{ .Values.api_cluster_manager.odin.image.tag}}"
+          imagePullPolicy: Always
           args: 
             - --config
             - /app/odin.yaml
@@ -40,14 +45,16 @@ spec:
             - name: {{ include "kubeonec.fullname" . }}-odin-conf
               mountPath: /app/odin.yaml
               subPath: odin.yaml
+      dnsConfig:
+        searches:
+          - {{ include "kubeonec.fullname" . }}-hs-service.onec.svc.cluster.local
       volumes:   
         - name: {{ include "kubeonec.fullname" . }}-odin-lic
           secret:
             secretName: odin-lic 
         - name: {{ include "kubeonec.fullname" . }}-odin-conf
           configMap:
-            name: {{ include "kubeonec.fullname" . }}-odin-conf           
-             
+            name: {{ include "kubeonec.fullname" . }}-odin-conf                        
       {{- if .Values.serviceAccount.create}}
       serviceAccount: {{ include "kubeonec.fullname" . }}-sa
       {{- end}}
@@ -76,6 +83,7 @@ spec:
       containers:
       - name: onec-client
         image: "{{ .Values.ones_client.image.repository }}:{{ .Values.ones_client.image.tag }}"
+        imagePullPolicy: Always
         command: ['sleep', 'infinity']
         # command: ['xstart', 'novnc']
         ports:
@@ -89,6 +97,12 @@ spec:
         - name: {{ include "kubeonec.fullname" . }}-nethasp
           mountPath: /opt/1C/v8.3/x86_64/conf/nethasp.ini
           subPath: nethasp.ini
+        env:
+        - name: KUBE_NAMESPACE
+          value: {{ .Values.Namespace }}
+      dnsConfig:
+        searches:
+          - {{ include "kubeonec.fullname" . }}-hs-service.onec.svc.cluster.local
       volumes:
         - name: {{ include "kubeonec.fullname" . }}-nethasp
           configMap:

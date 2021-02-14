@@ -16,43 +16,6 @@ data:
 
 ---
 
-{{- if eq .Values.api_cluster_manager.name "hirac" -}}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "kubeonec.fullname" . }}-hirac-conf
-  namespace: {{ .Values.Namespace }}
-data:
-  racsettings.json: |
-    {
-        "ras" : {
-            "__default" : {
-                "rac"        : "{{ .Values.onec_version}}",
-                "admin_name" : "",
-                "admin_pwd"  : ""
-            },
-            "onec_server" : {
-                "reserves" : "",
-                "ras"      : "localhost:{{ .Values.ones_ras.port }}"
-            },
-        },
-        "onec_server" : {
-            "__default" : {
-                "admin_name" : "",
-                "admin_pwd"  : ""
-            }
-        },
-      "connectionPoolSize"       : 10,
-      "reconnectAtempts"         : 3,
-      "reconnectInterval"        : 1500,
-      "connectionWait"           : 10000,
-      "connectionLockInterval"   : 90000,
-      "logQueryDuration"         : false,
-      "QueryDurationLogFilename" : ""
-    }
-
-{{ else }}
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -64,4 +27,37 @@ data:
     - addr: localhost
       descr: k8s server
       name: onec
-{{- end -}}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-host-add
+  namespace: {{ .Values.Namespace }}
+data:
+  k8s-onec-server-port-add.sh: |
+    #!/bin/bash
+    set -xe
+
+    TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) 
+    CURL_CA_BUNDLE=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt 
+
+    cd /tmp
+
+    if [ -z "${KUBE_NAMESPACE}" ]; then
+        rm onec-server.json
+        curl --cacert "$CURL_CA_BUNDLE" \
+        --header "Authorization: Bearer $TOKEN"  \
+        https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}/api/v1/namespaces/${KUBE_NAMESPACE}/pods?labelSelector=app%3Donec-server >> onec-server.json
+
+        for k in $(jq '.items | keys | .[]'  onec-server.json); do
+            value=$(jq -r ".items[$k]"  onec-server.json);
+            podName=$(jq -r '.metadata.name' <<< "$value");
+            podIP=$(jq -r '.status.podIP' <<< "$value");
+            echo "$podIP $podName" >> /etc/hosts
+            # printf '%s\t%s\t%s\n' "$name" "$podIP";
+        done | column -t -s$'\t'
+
+        rm onec-server.json
+    fi

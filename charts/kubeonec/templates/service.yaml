@@ -26,6 +26,35 @@ spec:
 
 ---
 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubeonec.fullname" . }}-hs-service
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "kubeonec.labels" . | nindent 4 }}
+spec:
+  ports:
+      {{- range   untilStep (int .Values.workProccesStartPort) (int .Values.workProccesEndPort) 1 }}  
+        - protocol: TCP
+          name: wp-{{ . }}
+          port: {{ (int .) }}
+      {{- end }}
+        - protocol: TCP
+          name: clmen
+          port: {{ .Values.serveragent }}
+        - protocol: TCP
+          name: cluster
+          port: {{ .Values.clusterManagerPort }}
+        - name: ras
+          port: {{ .Values.ones_ras.port }}
+  clusterIP: None
+  selector:
+    app: onec-server
+
+---
+
 apiVersion: v1
 kind: Service
 metadata:
