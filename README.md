@@ -49,6 +49,13 @@ imagePullSecrets: [
     helm upgrade -i onec-server -n onec -f values.yaml  charts/kubeonec
 ```
 
+## Создание серверной базы
+
+TODO
+
+![IMG](images\serverdb.jpg)
+
+
 ## Установка API сервера управления кластером 1C
 
 В текущем чарте поддерживаются 2 варианта сервера

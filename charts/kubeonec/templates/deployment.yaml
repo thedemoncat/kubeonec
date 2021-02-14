@@ -45,6 +45,9 @@ spec:
             - name: {{ include "kubeonec.fullname" . }}-odin-conf
               mountPath: /app/odin.yaml
               subPath: odin.yaml
+      dnsConfig:
+        searches:
+          - {{ include "kubeonec.fullname" . }}-hs-service.onec.svc.cluster.local
       volumes:   
         - name: {{ include "kubeonec.fullname" . }}-odin-lic
           secret:
@@ -99,7 +102,7 @@ spec:
           value: {{ .Values.Namespace }}
       dnsConfig:
         searches:
-          - onec-server-kubeonec-hs-service.onec.svc.cluster.local
+          - {{ include "kubeonec.fullname" . }}-hs-service.onec.svc.cluster.local
       volumes:
         - name: {{ include "kubeonec.fullname" . }}-nethasp
           configMap:
