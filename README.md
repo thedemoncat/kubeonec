@@ -53,7 +53,7 @@ imagePullSecrets: [
 
 TODO
 
-![IMG](images\serverdb.jpg)
+![IMG](images/serverdb.jpg)
 
 
 ## Установка API сервера управления кластером 1C
