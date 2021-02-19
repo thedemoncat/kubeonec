@@ -52,7 +52,7 @@ metadata:
   name: {{ include "kubeonec.fullname" . }}-postgres
   namespace: {{ .Values.Namespace }}
 spec:
-  serviceName: {{ include "kubeonec.fullname" . }}-postges-service
+  serviceName: {{ include "kubeonec.fullname" . }}-postgres-service
   selector:
     matchLabels:
       app: postgresql

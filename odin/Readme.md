@@ -9,7 +9,7 @@ curl --header "Content-Type: application/json" \
     "name": "testdb",
     "descr": "",
     "dbms": "PostgreSQL",
-    "db_server": "onec-server-kubeonec-postges-service",
+    "db_server": "onec-server-kubeonec-postgres-service",
     "db_name": "testdb",
     "db_user": "postgres",
     "db_pwd": "",
