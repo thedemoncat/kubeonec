@@ -20,14 +20,14 @@ kubectl create ns onec
 2. При использовании приватного docker registry необходимо создать секрет, с указанием параметров авторизации.
 
 ```
-kubectl create secret docker-registry regcred -n onec --docker-server=https://index.docker.io/v1/ --docker-username=demoncat --docker-password=1e9f9a94-9d68-4ac9-9927-debc8dbb689f --docker-email=nl.ruslan@yandex.ru
+kubectl create secret docker-registry regcred -n onec --docker-server=ghcr.io --docker-username=<your-name> --docker-password=<your-pasword> --docker-email=<your-email>
 
 ```
 , где 
 
 `<your-registry-server>` Адрес приватного Docker Registry FQDN. (https://index.docker.io/v1/ для DockerHub)
 `<your-name>`  Пользователь Docker.
-`<your-pword>` Пароль Docker.
+`<your-pasword>` Пароль Docker.
 `<your-email>` Электронная почта пользователя Docker.
 
 Затем прописать этот секрет в файле переменных values.yaml в блоке:
