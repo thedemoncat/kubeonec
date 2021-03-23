@@ -47,14 +47,14 @@ api_cluster_manager:
   odin:
     image: 
       repository: ghcr.io/khorevaa/kubodin
-      tag: v0.1.0-RC1
+      tag: v0.1
     port: 3001
 
 serviceAccount: 
   create: true
 
 imagePullSecrets: [
-  "regsecret"
+  "regcred-ghcr-read"
 ]
 
 nameOverride: ""

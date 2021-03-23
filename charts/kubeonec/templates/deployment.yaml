@@ -18,7 +18,7 @@ spec:
       containers:
         - name: onec-cluster-rac
           image: "{{ .Values.ones_ras.image.repository}}:{{ .Values.ones_ras.image.tag}}"
-          command: [ "/opt/1C/v8.3/x86_64/ras", "cluster", "onec-server-kubeonec-service" ]
+          command: [ "ras", "cluster", "onec-server-kubeonec-service" ]
           imagePullPolicy: Always
           ports: 
             - name: ras
@@ -30,21 +30,15 @@ spec:
         - name: ra-api
           image: "{{ .Values.api_cluster_manager.odin.image.repository}}:{{ .Values.api_cluster_manager.odin.image.tag}}"
           imagePullPolicy: Always
-          args: 
-            - --config
-            - /app/odin.yaml
-            - --debug
+          # args:
+          #   - -- port
+          #   - :{{ .Values.api_cluster_manager.odin.port}} 
+          #   - --server 
+          #   - localhost:{{ .Values.ones_ras.port }}
           ports:
             - name: odin-api-port
               containerPort: {{ .Values.api_cluster_manager.odin.port }}
               protocol: TCP
-          volumeMounts:
-            - name: {{ include "kubeonec.fullname" . }}-odin-lic
-              mountPath: /app/lic/license.lic
-              subPath: license.lic
-            - name: {{ include "kubeonec.fullname" . }}-odin-conf
-              mountPath: /app/odin.yaml
-              subPath: odin.yaml
       dnsConfig:
         searches:
           - {{ include "kubeonec.fullname" . }}-hs-service.onec.svc.cluster.local
@@ -84,7 +78,7 @@ spec:
       - name: onec-client
         image: "{{ .Values.ones_client.image.repository }}:{{ .Values.ones_client.image.tag }}"
         imagePullPolicy: Always
-        command: ['sleep', 'infinity']
+        command: ['./entrypoint.sh']
         # command: ['xstart', 'novnc']
         ports:
           - name: agent

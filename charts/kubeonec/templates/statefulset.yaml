@@ -25,6 +25,7 @@ spec:
         {{- else }}
         image: "{{ .Values.onec_server.image.repository }}:latest"
         {{- end }}
+        imagePullPolicy: Always
         ports:
           - name: cluster
             containerPort: {{ .Values.clusterManagerPort }}  
